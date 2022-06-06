@@ -22,7 +22,7 @@ class TikTokDownloader(object):
         start = time.time()
         if '@' in original_url:
             original_url = original_url
-            print("target link: ", original_url)
+            # print("target link: ", original_url)
         else:
             response = requests.get(url=original_url, headers=self.headers, allow_redirects=False)
             true_link = response.headers['Location'].split("?")[0]
@@ -33,7 +33,7 @@ class TikTokDownloader(object):
                 print("original_url: ", original_url)
         try:
             video_id = re.findall('video/(\d+)?', original_url)[0]
-            print('The obtained TikTok video ID is {}'.format(video_id))
+            # print('The obtained TikTok video ID is {}'.format(video_id))
 
             html = requests.get(url=original_url, headers=self.tiktok_headers)
             resp = re.search('"ItemModule":{(.*)},"UserModule":', html.text).group(1)

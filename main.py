@@ -4,7 +4,7 @@ from tiktok_scraper import TikTokScraper
 def main():
     print(" ******************** STARTED ********************")
 
-    scraper = TikTokScraper("phongdang.coder")
+    scraper = TikTokScraper("doodi_zone")
     scraper.run()
     
     print(" ******************** DONE ********************")

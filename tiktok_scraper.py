@@ -3,6 +3,7 @@ import collections
 import json
 import os
 import time
+import getpass
 from typing import Dict
 
 from bs4 import BeautifulSoup
@@ -19,6 +20,7 @@ from constants import SCROLL_DELAY
 from constants import SCROLLING_DELTA_Y
 
 from utils import download_video_background
+from utils import download_media_url
 
 
 class TikTokScraper:
@@ -27,13 +29,13 @@ class TikTokScraper:
         self.account = account
         self._videos_ids = set()
         self._headless = headless
-        self._base_video_folder_name = "downloaded_videos"
+        self._base_video_folder_name = f"/Users/{getpass.getuser()}/autofarmer Dropbox/Auto Farmer/TikTokVideos"
         self._full_path_directory = os.path.join(self._base_video_folder_name, account)
 
         self._create_downloaded_videos_directory_if_not_exists()
 
-    def _generate_tiktok_url(self, lang: str = "fr") -> str:
-        return f"https://www.tiktok.com/@{self.account}?lang={lang}"
+    def _generate_tiktok_url(self, lang: str = "vn") -> str:
+        return f"https://www.tiktok.com/@{self.account}"
 
     def _create_downloaded_videos_directory_if_not_exists(self):
         if not os.path.exists(self._full_path_directory):
@@ -43,18 +45,19 @@ class TikTokScraper:
         self._extract_comments_from_tiktok_item(item)
         video_id = item["video"]["id"]
         author_id = item["author"]
-        # print(f"author_id: {author_id} video_id: {video_id}")
+        print(len(self._videos_ids))
         if video_id not in self._videos_ids:
             self._videos_ids.add(video_id)
-            download_video_background(author_id, video_id, self._full_path_directory)
 
     def _extract_comments_from_tiktok_item(self, item: Dict) -> None:
         tiktok_id = item["id"]
         print(f"Tiktok video_id:", tiktok_id)
 
     def handle_xhr_request(self, response: Response) -> None:
+        print(f"url: {response.url}")
         try:
-            if response.url.startswith("https://t.tiktok.com/api/post/item_list/"):
+            if response.url.startswith("https://t.tiktok.com/api/post/item_list/") or response.url.startswith("https://m.tiktok.com/api/post/item_list"):
+                print(response.url)
                 data = response.json()
                 items = data["itemList"]
                 for item in items:
@@ -94,6 +97,7 @@ class TikTokScraper:
         has_reached = False
         while not has_reached:
             page.mouse.wheel(delta_x=0, delta_y=75)
+            # page.keyboard.press('ArrowDown')
             page.wait_for_load_state("domcontentloaded")
 
             value = page.evaluate("window.scrollY")
@@ -101,7 +105,7 @@ class TikTokScraper:
 
             if len(last_y_positions) == positions_y_deque_size and len(set(last_y_positions)) == 1:
                 has_reached = True
-
+                        
 
     def run(self):
         with sync_playwright() as p:
@@ -115,3 +119,6 @@ class TikTokScraper:
 
             self._scroll_to_bottom(page)
             page.close()
+
+            for video_id in self._videos_ids:
+                download_media_url(self.account, video_id, self._full_path_directory)

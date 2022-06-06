@@ -28,7 +28,11 @@ class VideoEditor(object):
     def reduceVol(self):
         self._clip = self._clip.volumex(0.9)
 
+    def flipHorizoltal(self):
+        self._clip = self._clip.fx(vfx.mirror_x)
+
     def generate(self):
+        self.flipHorizoltal()
         self.cropVideo()
         self.fadeinout()
         self.resizeVideo()

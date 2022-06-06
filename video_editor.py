@@ -12,7 +12,8 @@ class VideoEditor(object):
 
         self._filename = os.path.basename(self._video_path)
         self._clip = VideoFileClip(self._video_path)
-        self._audio = self._clip.audio
+        self._audio = AudioFileClip(self._video_path)
+
 
 
 
@@ -26,7 +27,8 @@ class VideoEditor(object):
         self._clip = self._clip.resize(height=self._clip.h*1.1, width=self._clip.w*1.05)
 
     def reduceVol(self):
-        self._clip = self._clip.volumex(0.9)
+        self._clip = self._clip.volumex(1.1)
+
 
     def flipHorizoltal(self):
         self._clip = self._clip.fx(vfx.mirror_x)
@@ -40,7 +42,7 @@ class VideoEditor(object):
 
         filename, file_extension = os.path.splitext(self._video_path)
         new_video_path = self._video_path.replace(file_extension, f"_regen{file_extension}")
-        self._clip.write_videofile(new_video_path)
+        self._clip.write_videofile(new_video_path, temp_audiofile='temp-audio.m4a', remove_temp=True, codec="libx264", audio_codec="aac")
 
 
 

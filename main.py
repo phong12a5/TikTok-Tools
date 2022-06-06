@@ -8,7 +8,7 @@ def scrap(account : str):
     scraper = TikTokScraper(account = account)
     scraper.run()
 
-def scrapMultiAccount:
+def scrapMultiAccount():
     ACCOUNTS = ['ditesuna',
             'kauut30',
             'endrileka633',
@@ -23,7 +23,8 @@ def scrapMultiAccount:
             'pjlquzl6gpqr',
             'haquy1996',
             'ting728118',
-            'quinteramms']
+            'quinteramms',
+            'phuongmaii_95']
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             executor.map(scrap, ACCOUNTS)
@@ -36,11 +37,11 @@ def main():
         task = args[1]
         if task == "scrap":
             scrapMultiAccount()
-        else if task == "video"
+        elif task == "video":
             editor = VideoEditor('/Users/phongdang/Temp/video.mp4')
             editor.generate()
 
-    else 
+    else: 
         print("invalid param")
 
     print(" ******************** DONE ********************")

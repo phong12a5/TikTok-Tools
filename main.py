@@ -1,3 +1,4 @@
+from pickle import FALSE
 from tiktok_scraper import TikTokScraper
 from video_editor import VideoEditor
 import sys
@@ -50,6 +51,9 @@ def genVideo():
                     continue
                 elif regen_video in videos:
                     print("ignore .... ", video_id)
+                    continue
+                elif video.endswith(".mp4") == FALSE:
+                    print(f"{video} is not video file .... ")
                     continue
                 
                 needed_gen_video = os.path.join(authorDir,video)

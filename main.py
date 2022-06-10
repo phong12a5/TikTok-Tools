@@ -3,7 +3,8 @@ from video_editor import VideoEditor
 import sys
 import os
 import concurrent.futures
-import urllib.request
+import requests
+import json
 
 ACCOUNTS = ['ditesuna',
         'doodi_zone',
@@ -43,18 +44,35 @@ def genVideo():
             videos = set(os.listdir(authorDir))
             for video in videos:
                 video_id = os.path.splitext(video)[0]
+                regen_video = video_id + "_regen.mp4"
                 if video_id.endswith("_regen"):
-                    print(video_id)
+                    print("ignore .... ", video_id)
                     continue
-                elif (video_id + "_regen.mp4") in videos:
-                    print(video_id)
+                elif regen_video in videos:
+                    print("ignore .... ", video_id)
                     continue
                 
                 needed_gen_video = os.path.join(authorDir,video)
                 editor = VideoEditor(needed_gen_video)
                 editor.generate()
+                submitVideo(video_id, author, f"/TikTokVideos/{author}/{regen_video}")
 
 
+def submitVideo(video_id: str, author: str, video_path : str):
+    url = "https://dangbaphong.com/api/tiktok/mm-tiktok-api.php"
+
+    payload = json.dumps({
+    "api": "add_new_video",
+    "video_id": video_id,
+    "author": author,
+    "video_path": video_path
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload) 
+    print(response)
 
     
 

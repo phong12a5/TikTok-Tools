@@ -20,8 +20,8 @@ class VideoEditor(object):
     def cropVideo(self):
         self._clip = self._clip.crop(x1=2, y1=2, x2=self._clip.w - 3, y2=self._clip.h - 3)
 
-    def fadeinout(self):
-        self._clip = self._clip.fadein(2).fadeout(2)
+    def fadeout(self):
+        self._clip = self._clip.fadeout(2)
 
     def resizeVideo(self):
         self._clip = self._clip.resize(height=self._clip.h*1.1, width=self._clip.w*1.05)
@@ -36,7 +36,7 @@ class VideoEditor(object):
     def generate(self):
         self.flipHorizoltal()
         self.cropVideo()
-        self.fadeinout()
+        self.fadeout()
         self.resizeVideo()
         self.reduceVol()
 

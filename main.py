@@ -7,23 +7,22 @@ import concurrent.futures
 import requests
 import json
 
-ACCOUNTS = ['ditesuna',
+ACCOUNTS = [
+        'ditesuna',
         'doodi_zone',
         'kauut30',
         'endrileka633',
         'guoervictoria0212',
-        'rollerming',
         'janice_yy',
         'nyxinhlamne1212',
-        'o___o988',
         'nana_omake1',
         'herher408',
-        'ngoctuyen_09',
         'pjlquzl6gpqr',
         'haquy1996',
-        'ting728118',
         'quinteramms',
-        'phuongmaii_95']
+        'phuongmaii_95',
+        'thutrang20023',
+        'nabi15100']
 
 def scrap(account : str):
     scraper = TikTokScraper(account = account)
@@ -44,6 +43,9 @@ def genVideo():
             
             videos = set(os.listdir(authorDir))
             for video in videos:
+                if video == ".DS_Store":
+                    continue
+
                 video_id = os.path.splitext(video)[0]
                 regen_video = video_id + "_regen.mp4"
                 if video_id.endswith("_regen"):

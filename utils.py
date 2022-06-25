@@ -22,7 +22,7 @@ def download_media_url(author_id: str, video_id: str, download_directory: str) -
         print(f"{Fore.CYAN}[=] Filename {video_filename} already downloaded{Style.RESET_ALL}")
     else:
         tiktok_downloader = TikTokDownloader()
-        tiktok_downloader.download_nwm_video(url=f"https://www.tiktok.com/@{author_id}/video/{video_id}", save_path=full_path)
+        tiktok_downloader.download_nwm_video(author_id = author_id, video_id = video_id, save_path=full_path)
 
 def download_video_background(author_id: str, video_id: str, download_directory: str) -> None:
     thread = threading.Thread(target=download_media_url, name="Video Downloader", args=(author_id, video_id, download_directory))

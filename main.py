@@ -22,19 +22,21 @@ ACCOUNTS = [
         'quinteramms',
         'phuongmaii_95',
         'thutrang20023',
-        'nabi15100']
+        'nabi15100',
+        'mytay.955'
+        ]
 
 def scrap(account : str):
     scraper = TikTokScraper(account = account)
     scraper.run()
 
 def scrapMultiAccount():
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             executor.map(scrap, ACCOUNTS)
 
 
 def genVideo():
-    rootVideoFolder = "/Users/dangphong/autofarmer Dropbox/Auto Farmer/TikTokVideos"
+    rootVideoFolder = "/Users/phongdang/autofarmer Dropbox/Auto Farmer/TikTokVideos"
     files = set(os.listdir(rootVideoFolder))
     for author in files:
         if author in ACCOUNTS:

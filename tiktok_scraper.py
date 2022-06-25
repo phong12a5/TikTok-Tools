@@ -53,19 +53,8 @@ class TikTokScraper:
         tiktok_id = item["id"]
         print(f"Tiktok video_id:", tiktok_id)
 
-    def handle_xhr_request(self, response: Response) -> None:
-        print(f"url: {response.url}")
-        try:
-            if response.url.startswith("https://t.tiktok.com/api/post/item_list/") or response.url.startswith("https://m.tiktok.com/api/post/item_list"):
-                print(response.url)
-                data = response.json()
-                items = data["itemList"]
-                for item in items:
-                    self._extract_video_download_addr_from_item(item)
-        except Exception as e:
-            print("No xhr data here...", e)
-
-    def handle_document_request(self, response: Response) -> None:
+    def handle_request(self, response: Response) -> None:
+        print(f"handle_request-> url: {response.url}")
         try:
             if response.request.resource_type == "document":
                 content = response.text()
@@ -75,9 +64,14 @@ class TikTokScraper:
 
                 for key, item in data["ItemModule"].items():
                     self._extract_video_download_addr_from_item(item)
+            elif "tiktok.com/api/post/item_list" in response.url:
+                data = response.json()
+                items = data["itemList"]
+                for item in items:
+                    self._extract_video_download_addr_from_item(item)
 
         except Exception as e:
-            print("No document data here...", e)
+            print("handle_request error: ", e)
 
     def block_unnecessary_resources(self, route: Route) -> None:
         if (route.request.resource_type in EXCLUDED_RESOURCE_TYPES):
@@ -109,11 +103,11 @@ class TikTokScraper:
 
     def run(self):
         with sync_playwright() as p:
+            url = self._generate_tiktok_url()
             browser = p.firefox.launch(headless=self._headless)
             context = browser.new_context(viewport={"width": 1920, "height": 1080})
             page = context.new_page()
-            page.on("response", self.handle_document_request)
-            page.on("response", self.handle_xhr_request)
+            page.on("response", self.handle_request)
             page.route("**/*", self.block_unnecessary_resources)
             page.goto(self._generate_tiktok_url())
 

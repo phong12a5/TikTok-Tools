@@ -18,30 +18,10 @@ class TikTokDownloader(object):
             "User-Agent": "Mozilla/5.0  (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/86.0.170 Chrome/80.0.3987.170 Safari/537.36",
         }
 
-    def get_video_info(self,original_url):
+    def get_video_info(self,author_id, video_id):
         start = time.time()
-        if '@' in original_url:
-            original_url = original_url
-            # print("target link: ", original_url)
-        else:
-            response = requests.get(url=original_url, headers=self.headers, allow_redirects=False)
-            true_link = response.headers['Location'].split("?")[0]
-            original_url = true_link
-            if '.html' in true_link:
-                response = requests.get(url=true_link, headers=self.headers, allow_redirects=False)
-                original_url = response.headers['Location'].split("?")[0]
-                print("original_url: ", original_url)
         try:
-            video_id = re.findall('video/(\d+)?', original_url)[0]
-            # print('The obtained TikTok video ID is {}'.format(video_id))
-
-            html = requests.get(url=original_url, headers=self.tiktok_headers)
-            resp = re.search('"ItemModule":{(.*)},"UserModule":', html.text).group(1)
-            resp_info = ('{"ItemModule":{' + resp + '}}')
-            result = json.loads(resp_info)
-            video_info = result["ItemModule"][video_id]
             tiktok_api_link = 'https://api.tiktokv.com/aweme/v1/multi/aweme/detail/?aweme_ids=%5B{}%5D'.format(video_id)
-            print('tiktok_api_link:{}'.format(tiktok_api_link))
             response = requests.get(url=tiktok_api_link, headers=self.headers).text
             result = json.loads(response)
             url_type = 'video'
@@ -65,21 +45,12 @@ class TikTokDownloader(object):
             video_play_count = result["aweme_details"][0]['statistics']['play_count']
             video_download_count = result["aweme_details"][0]['statistics']['download_count']
             video_share_count = result["aweme_details"][0]['statistics']['share_count']
-            video_author_followerCount = video_info['authorStats']['followerCount']
-            video_author_followingCount = video_info['authorStats']['followingCount']
-            video_author_heartCount = video_info['authorStats']['heartCount']
-            video_author_videoCount = video_info['authorStats']['videoCount']
-            video_author_diggCount = video_info['authorStats']['diggCount']
-            video_hashtags = []
-            for tag in video_info['challenges']:
-                video_hashtags.append(tag['title'])
             end = time.time()
             analyze_time = format((end - start), '.4f')
             video_date = {'status': 'success',
                             'analyze_time': (analyze_time + 's'),
                             'url_type': url_type,
                             'api_url': tiktok_api_link,
-                            'original_url': original_url,
                             'platform': 'tiktok',
                             'video_title': video_title,
                             'nwm_video_url': nwm_video_url,
@@ -96,21 +67,16 @@ class TikTokDownloader(object):
                             'video_digg_count': video_digg_count,
                             'video_play_count': video_play_count,
                             'video_share_count': video_share_count,
-                            'video_download_count': video_download_count,
-                            'video_author_followerCount': video_author_followerCount,
-                            'video_author_followingCount': video_author_followingCount,
-                            'video_author_heartCount': video_author_heartCount,
-                            'video_author_videoCount': video_author_videoCount,
-                            'video_author_diggCount': video_author_diggCount,
-                            'video_hashtags': video_hashtags
+                            'video_download_count': video_download_count
                             }
             return video_date
         except Exception as e:
-            return {'status': 'failed', 'reason': e, 'function': 'Scraper.tiktok()', 'value': original_url}
+            return {'status': 'failed', 'reason': e, 'function': 'Scraper.tiktok()'}
 
-    def download_nwm_video(self,url, save_path):
+    def download_nwm_video(self,author_id, video_id, save_path):
+        print(f"download_nwm_video-> author_id: {author_id} video_id: {video_id}")
         try:
-            video_info = self.get_video_info(original_url = url )
+            video_info = self.get_video_info(author_id = author_id, video_id = video_id )
             if video_info.get("nwm_video_url"):
                 nwm_video_url = video_info["nwm_video_url"]
                 video_data = self.get_req_content(nwm_video_url, params=None, headers=self.tiktok_headers)

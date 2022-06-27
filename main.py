@@ -6,6 +6,7 @@ import os
 import concurrent.futures
 import requests
 import json
+import getpass
 
 ACCOUNTS = [
         'ditesuna',
@@ -24,6 +25,7 @@ ACCOUNTS = [
         'thutrang20023',
         'nabi15100',
         'mytay.955'
+        'lanzk80'
         ]
 
 def scrap(account : str):
@@ -36,7 +38,7 @@ def scrapMultiAccount():
 
 
 def genVideo():
-    rootVideoFolder = "/Users/phongdang/autofarmer Dropbox/Auto Farmer/TikTokVideos"
+    rootVideoFolder = f"/Users/{getpass.getuser()}/autofarmer Dropbox/Auto Farmer/TikTokVideos"
     files = set(os.listdir(rootVideoFolder))
     for author in files:
         if author in ACCOUNTS:

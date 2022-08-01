@@ -9,23 +9,23 @@ import json
 import getpass
 
 ACCOUNTS = [
-        'ditesuna',
-        'doodi_zone',
-        'kauut30',
-        'endrileka633',
-        'guoervictoria0212',
-        'janice_yy',
-        'nyxinhlamne1212',
-        'nana_omake1',
-        'herher408',
-        'pjlquzl6gpqr',
-        'haquy1996',
-        'quinteramms',
-        'phuongmaii_95',
-        'thutrang20023',
-        'nabi15100',
+        # 'ditesuna',
+        # 'doodi_zone',
+        # 'kauut30',
+        # 'endrileka633',
+        # 'guoervictoria0212',
+        # 'janice_yy',
+        # 'nyxinhlamne1212',
+        # 'nana_omake1',
+        # 'herher408',
+        # 'pjlquzl6gpqr',
+        # 'haquy1996',
+        # 'quinteramms',
+        # 'phuongmaii_95',
+        # 'thutrang20023',
+        # 'nabi15100',
         'mytay.955'
-        'lanzk80'
+        # 'lanzk80'
         ]
 
 def scrap(account : str):
